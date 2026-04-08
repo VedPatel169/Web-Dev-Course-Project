@@ -3,6 +3,8 @@
 <head>
   <title>Study Tracker</title>
   <script src="https://unpkg.com/vue@3"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="handle_data.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,15 +13,18 @@
   <h1 id="title">Study Sessions</h1>
 
   <!-- FORM -->
-  <form @submit.prevent="addSession">
-    <input v-model="newSession.subject" placeholder="Subject" required />
-    <input v-model.number="newSession.duration" type="number" placeholder="Duration (mins)" required />
-    <input v-model.number="newSession.productivity" type="number" min="1" max="5" placeholder="Productivity (1-5)" required />
-    <input v-model="newSession.date" type="date" required />
+  <form @submit.prevent="addSession" id="user_subject_data">
+    <input name="subject" v-model="newSession.subject" placeholder="Subject" required />
+    <input name="duration" v-model.number="newSession.duration" type="number" placeholder="Duration (mins)" required />
+    <input name="productivity" v-model.number="newSession.productivity" type="number" min="1" max="5" placeholder="Productivity (1-5)" required />
+    <input name="date" v-model="newSession.date" type="date" required />
+    <input name="additional_notes" id="additional-notes" type="text" placeholder="Additional Notes">
     <button id="session-button" type="submit">Add Session</button>
   </form>
 
   <hr />
+
+<div id="chart-container"></div>
 
   <!-- DISPLAY SESSIONS -->
   <div v-for="session in sessions" :key="session.id">
@@ -28,6 +33,10 @@
     <button @click="deleteSession(session.id)">Delete</button>
   </div>
 </div>
+
+<script>
+  
+</script>
 
 <script>
 const { createApp } = Vue;
@@ -49,6 +58,10 @@ createApp({
     async fetchSessions() {
       const res = await fetch('http://localhost:3000/api/sessions');
       this.sessions = await res.json();
+
+      this.$nextTick(() => {
+        updateStudyChart(this.sessions);
+      });
     },
 
     async addSession() {
