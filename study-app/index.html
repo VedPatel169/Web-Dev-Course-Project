@@ -3,12 +3,33 @@
 <head>
   <title>Study Tracker</title>
   <script src="https://unpkg.com/vue@3"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="handle_data.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div id="app">
 
+  <!-- FORM -->
+  <form @submit.prevent="addSession" id="user_subject_data">
+    <input name="subject" v-model="newSession.subject" placeholder="Subject" required />
+    <input name="duration" v-model.number="newSession.duration" type="number" placeholder="Duration (mins)" required />
+    <input name="productivity" v-model.number="newSession.productivity" type="number" min="1" max="5" placeholder="Productivity (1-5)" required />
+    <input name="date" v-model="newSession.date" type="date" required />
+    <input name="additional_notes" id="additional-notes" type="text" placeholder="Additional Notes">
+    <button id="session-button" type="submit">Add Session</button>
+  </form>
+
+  <hr />
+
+<div id="chart-container"></div>
+
+  <!-- DISPLAY SESSIONS -->
+  <div v-for="session in sessions" :key="session.id">
+    {{ session.subject }} - {{ session.duration }} mins ({{ session.productivity }}/5)
+
+    <button @click="deleteSession(session.id)">Delete</button>
   <!-- NAVBAR -->
   <div class="topnav">
     <a href="#" @click.prevent="currentPage = 'home'" :class="{ active: currentPage === 'home'}">Home</a>
