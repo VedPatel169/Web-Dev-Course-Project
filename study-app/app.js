@@ -55,12 +55,12 @@ createApp({
     async deleteSession(id) {
       try {
         await fetch(`http://localhost:3000/api/sessions/${id}`, {
-        method: 'DELETE',
-      });
+          method: 'DELETE',
+        });
 
-      // Refresh list after deletion
-      this.fetchSessions();
-      } catch(err) {
+        // Refresh list after deletion
+        this.fetchSessions();
+      } catch (err) {
         console.error("Delete failed:", err);
       }
     },
